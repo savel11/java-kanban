@@ -3,11 +3,10 @@ package manager;
 import model.Epic;
 import model.Task;
 import model.Subtask;
+
 import java.util.List;
 
 public interface TaskManager {
-
-
 
 
     Task getTask(int id);
