@@ -41,14 +41,14 @@ public class InMemoryHistoryManager implements HistoryManager {
     public void remove(int id) {
     }
 
-    public static class TasksDoubleList<Task> {
-        public Node<Task> head;
-        public Node<Task> tail;
+    public static class TasksDoubleList<T> {
+        public Node<T> head;
+        public Node<T> tail;
         private int size = 0;
 
-        public void linkLast(Task task) {
-            final Node<Task> oldTail = tail;
-            final Node<Task> newNode = new Node<>(task, oldTail, null);
+        public void linkLast(T task) {
+            final Node<T> oldTail = tail;
+            final Node<T> newNode = new Node<>(task, oldTail, null);
             tail = newNode;
             if (oldTail == null) {
                 head = newNode;
@@ -58,9 +58,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             size++;
         }
 
-        public List<Task> getTask() {
-            List<Task> history = new ArrayList<>();
-            Node<Task> task = head;
+        public List<T> getTask() {
+            List<T> history = new ArrayList<>();
+            Node<T> task = head;
             for (int i = 1; i <= size; i++) {
                 history.add(task.data);
                 task = task.next;
@@ -70,7 +70,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         }
 
-        public void removeNode(Node<Task> taskNode) {
+        public void removeNode(Node<T> taskNode) {
             size--;
             if (size == 0) {
                 tail = head = null;
