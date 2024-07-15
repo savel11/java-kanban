@@ -36,7 +36,10 @@ public class InMemoryHistoryManager implements HistoryManager {
     public List<Task> getHistory() {
         return history = tasksDoubleList.getTask();
     }
-
+    @Override
+    public void clearHistory() {
+        tasksDoubleList.clear();
+    }
     @Override
     public void remove(int id) {
     }
@@ -86,6 +89,13 @@ public class InMemoryHistoryManager implements HistoryManager {
                 taskNode.next.prev = taskNode.prev;
                 taskNode.prev.next = taskNode.next;
 
+            }
+        }
+        public void clear() {
+            if (size > 0) {
+                head = null;
+                tail = null;
+                size = 0;
             }
         }
     }

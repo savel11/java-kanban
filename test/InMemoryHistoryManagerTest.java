@@ -1,4 +1,5 @@
 import manager.HistoryManager;
+import manager.InMemoryHistoryManager;
 import model.TaskStatus;
 import org.junit.jupiter.api.Test;
 
@@ -6,23 +7,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import manager.Managers;
 import model.Task;
 
 import java.util.List;
 
 class InMemoryHistoryManagerTest {
-    Managers managers = new Managers();
-
-    HistoryManager historyManager = managers.getDefaultHistory();
+    HistoryManager historyManager = new InMemoryHistoryManager();
 
     @Test
     void add() {
         Task task = new Task("Уборка", "Помыть посуду", TaskStatus.DONE, 5);
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
-        assertNotNull(history, "История не пустая.");
-        assertEquals(1, history.size(), "История не пустая.");
+        assertNotNull(history, "История пустая.");
+        assertEquals(1, history.size(), "Размер истории неверен.");
     }
 
     @Test
@@ -37,12 +35,12 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldNotBeDuplicatesInHistory() {
+
         Task task = new Task("Уборка", "Помыть посуду", TaskStatus.DONE, 5);
         historyManager.add(task);
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
         assertEquals(1, history.size(), "В истории есть дубликат.");
-
     }
 
     @Test
@@ -55,8 +53,5 @@ class InMemoryHistoryManagerTest {
         final List<Task> history = historyManager.getHistory();
         assertEquals(2, history.size(), "Дубликат не удалился.");
         assertEquals("Уборка", history.get(history.size() - 1).getNameTask(), "Дубликат не добавлен в конец списка.");
-
     }
-
-
 }
