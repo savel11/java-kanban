@@ -39,7 +39,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-
     }
 
     public static class TasksDoubleList<Task> {
@@ -58,7 +57,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             size++;
         }
-        
 
         public List<Task> getTask() {
             List<Task> history = new ArrayList<>();
