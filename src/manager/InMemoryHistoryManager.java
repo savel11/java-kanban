@@ -42,7 +42,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    public class TasksDoubyLinkedList<Task> {
+    public static class TasksDoubyLinkedList<Task> {
         public Node<Task> head;
         public Node<Task> tail;
         private int size = 0;
@@ -59,9 +59,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             size++;
         }
 
-        public int size() {
-            return this.size;
-        }
+       
 
         public List<Task> getTask() {
             List<Task> history = new ArrayList<>();
