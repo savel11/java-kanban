@@ -13,33 +13,25 @@ public class InMemoryHistoryManager implements HistoryManager {
     TasksDoubleList<Task> tasksDoubleList = new TasksDoubleList<>();
     Map<Integer, Node<Task>> nodeMap = new HashMap<>();
 
-
     @Override
     public void add(Task task) {
         if (nodeMap.containsKey(task.getId())) {
             tasksDoubleList.removeNode(nodeMap.get(task.getId()));
             Task taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId());
-
             tasksDoubleList.linkLast(taskHistory);
             nodeMap.put(task.getId(), tasksDoubleList.tail);
         } else {
             Task taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId());
-
             tasksDoubleList.linkLast(taskHistory);
             nodeMap.put(task.getId(), tasksDoubleList.tail);
-
         }
-
     }
 
     @Override
     public List<Task> getHistory() {
         return history = tasksDoubleList.getTask();
     }
-    @Override
-    public void clearHistory() {
-        tasksDoubleList.clear();
-    }
+
     @Override
     public void remove(int id) {
     }
@@ -67,10 +59,8 @@ public class InMemoryHistoryManager implements HistoryManager {
             for (int i = 1; i <= size; i++) {
                 history.add(task.data);
                 task = task.next;
-
             }
             return history;
-
         }
 
         public void removeNode(Node<T> taskNode) {
@@ -83,19 +73,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             } else if (taskNode.prev == null) {
                 head = taskNode.next;
                 taskNode.next.prev = null;
-
-
             } else {
                 taskNode.next.prev = taskNode.prev;
                 taskNode.prev.next = taskNode.next;
-
-            }
-        }
-        public void clear() {
-            if (size > 0) {
-                head = null;
-                tail = null;
-                size = 0;
             }
         }
     }
