@@ -53,5 +53,23 @@ class InMemoryTaskManagerTest {
         assertEquals(subtask, taskManager.getSubtask(subtask.getId()));
     }
 
+    @Test
+    void shouldNotBeDeletetedSubtaskIdInEpic() {
+        Epic epic = new Epic("Переезд", "Собрать все вещи");
+        taskManager.createEpic(epic);
+        Subtask subtask = new Subtask("Собрать вещи", "Разложить вещи по коробкам", TaskStatus.NEW, epic);
+        taskManager.createSubtask(subtask);
+        Subtask subtask1 = new Subtask("Убрать квартиру", "Убрать", TaskStatus.NEW, epic);
+        taskManager.createSubtask(subtask1);
+        taskManager.deleteSubtaskForId(subtask1.getId());
+        taskManager.updateEpic(epic);
+        List<Subtask> subtaskList = epic.getSubTasks();
+        for (Subtask sub : subtaskList) {
+            assertNotEquals(sub.getId(), subtask1.getId(), "Эпик содержит не актуальный id подзачи.");
+        }
+    }
+
+
+
 
 }

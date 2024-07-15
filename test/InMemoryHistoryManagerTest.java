@@ -32,7 +32,30 @@ class InMemoryHistoryManagerTest {
         task.setNameTask("Убрать кухню");
         historyManager.add(task);
         final List<Task> history = historyManager.getHistory();
-        assertNotEquals(history.get(0).getNameTask(), history.get(1).getNameTask(), "Не сохранялись предыдущие данные");
+        assertNotEquals(history.get(0).getNameTask(), "Уборка", "Не сохранялись предыдущие данные");
+    }
+
+    @Test
+    void shouldNotBeDuplicatesInHistory() {
+        Task task = new Task("Уборка", "Помыть посуду", TaskStatus.DONE, 5);
+        historyManager.add(task);
+        historyManager.add(task);
+        final List<Task> history = historyManager.getHistory();
+        assertEquals(1, history.size(), "В истории есть дубликат.");
+
+    }
+
+    @Test
+    void shouldDuplicatesInHistoryBeRemovedOldValueAndAddToEndOfTheHistory() {
+        Task task = new Task("Уборка", "Помыть посуду", TaskStatus.DONE, 5);
+        Task task1 = new Task("Тренировка", "Пробежать 5 км", TaskStatus.NEW, 3);
+        historyManager.add(task);
+        historyManager.add(task1);
+        historyManager.add(task);
+        final List<Task> history = historyManager.getHistory();
+        assertEquals(2, history.size(), "Дубликат не удалился.");
+        assertEquals("Уборка", history.get(history.size() - 1).getNameTask(), "Дубликат не добавлен в конец списка.");
+
     }
 
 

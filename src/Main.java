@@ -40,10 +40,12 @@ public class Main {
 
 
         System.out.println("Список задач:" + inMemoryTaskManager.getTask(task.getId()));
+        System.out.println("Список задач:" + inMemoryTaskManager.getTask(task.getId()));
         System.out.println("Список задач:" + inMemoryTaskManager.getEpic(epic.getId()));
         System.out.println("Список задач:" + inMemoryTaskManager.getTask(task.getId()));
         System.out.println("Список задач:" + inMemoryTaskManager.getSubtask(subtask.getId()));
-        System.out.println(inMemoryHistoryManager.getHistory());
+        System.out.println("История " + inMemoryHistoryManager.getHistory());
+        System.out.println("Размер " + inMemoryHistoryManager.getHistory().size());
 
         task.setStatus(TaskStatus.DONE);
         subtask2.setStatus(TaskStatus.DONE);
@@ -55,6 +57,8 @@ public class Main {
         System.out.println("Список задач:" + inMemoryTaskManager.getEpic(epic.getId()));
         System.out.println("Список задач:" + inMemoryTaskManager.getSubtask(subtask.getId()));
         System.out.println(inMemoryHistoryManager.getHistory());
+
+        System.out.println("Размер " + inMemoryHistoryManager.getHistory().size());
 
 
     }
