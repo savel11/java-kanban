@@ -9,13 +9,10 @@ import manager.HistoryManager;
 public class Main {
 
     public static void main(String[] args) {
-        Managers managers = new Managers();
-        TaskManager inMemoryTaskManager = managers.getDefault();
-        HistoryManager inMemoryHistoryManager = managers.getDefaultHistory();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
+        HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         Task task = new Task("run", "running", TaskStatus.NEW);
         inMemoryTaskManager.createTask(task);
-
-
         Task task2 = new Task("Chek", "Chek work", TaskStatus.NEW);
         inMemoryTaskManager.createTask(task2);
 

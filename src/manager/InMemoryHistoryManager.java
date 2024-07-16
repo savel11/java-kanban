@@ -9,31 +9,28 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    List<Task> history = new ArrayList<>();
-    TasksDoubleList<Task> tasksDoubleList = new TasksDoubleList<>();
-    Map<Integer, Node<Task>> nodeMap = new HashMap<>();
+    private TasksDoubleList<Task> tasksDoubleList = new TasksDoubleList<>();
+    private Map<Integer, Node<Task>> nodeMap = new HashMap<>();
 
     @Override
     public void add(Task task) {
         if (nodeMap.containsKey(task.getId())) {
-            tasksDoubleList.removeNode(nodeMap.get(task.getId()));
-            Task taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId());
-            tasksDoubleList.linkLast(taskHistory);
-            nodeMap.put(task.getId(), tasksDoubleList.tail);
-        } else {
-            Task taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId());
-            tasksDoubleList.linkLast(taskHistory);
-            nodeMap.put(task.getId(), tasksDoubleList.tail);
+            remove(task.getId());
         }
+        Task taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId());
+        tasksDoubleList.linkLast(taskHistory);
+        nodeMap.put(task.getId(), tasksDoubleList.tail);
     }
 
     @Override
     public List<Task> getHistory() {
-        return history = tasksDoubleList.getTask();
+        return tasksDoubleList.getTask();
     }
 
     @Override
     public void remove(int id) {
+        tasksDoubleList.removeNode(nodeMap.get(id));
+        nodeMap.remove(id);
     }
 
     public static class TasksDoubleList<T> {

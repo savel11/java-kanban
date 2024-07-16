@@ -1,4 +1,6 @@
 
+import manager.HistoryManager;
+import manager.InMemoryHistoryManager;
 import manager.Managers;
 import manager.TaskManager;
 import model.TaskStatus;
@@ -14,9 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class InMemoryTaskManagerTest {
-    Managers managers = new Managers();
-    TaskManager taskManager = managers.getDefault();
-
+    TaskManager taskManager = Managers.getDefault();
     @Test
     void shouldBeChangedId() {
         Task task = new Task("Уборка", "Помыть посуду", TaskStatus.DONE, 50);
@@ -68,8 +68,6 @@ class InMemoryTaskManagerTest {
             assertNotEquals(sub.getId(), subtask1.getId(), "Эпик содержит не актуальный id подзачи.");
         }
     }
-
-
 
 
 }

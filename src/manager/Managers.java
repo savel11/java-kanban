@@ -8,6 +8,6 @@ public class Managers {
     }
 
     public static HistoryManager getDefaultHistory() {
-        return inMemoryHistoryManager;
+        return  inMemoryHistoryManager;
     }
 }
