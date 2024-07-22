@@ -5,21 +5,20 @@ import model.TaskStatus;
 import model.Subtask;
 
 import java.io.File;
-import java.io.IOException;
+
 
 import static manager.FileBackedTaskManager.loadFromFile;
 
 
 public class Main {
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
-     TaskManager fileBackedTaskManagers1 =  loadFromFile( new File("savedTasks.txt"));
+        TaskManager fileBackedTaskManagers1 = loadFromFile(new File("savedTasks.txt"));
 
         TaskManager inMemoryTaskManager = Managers.getDefault();
-        HistoryManager inMemoryHistoryManager  = Managers.getDefaultHistory();
-       TaskManager fileBackedTaskManagers = new FileBackedTaskManager(new File("savedTasks.txt"));
-
+        HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+        TaskManager fileBackedTaskManagers = new FileBackedTaskManager(new File("savedTasks.txt"));
 
 
         Task task = new Task("run", "running", TaskStatus.NEW);
@@ -66,29 +65,23 @@ public class Main {
         System.out.println("Список задач:" + inMemoryTaskManager.getSubtask(subtask.getId()));
 
 
-     System.out.println(inMemoryHistoryManager.getHistory());
+        System.out.println(inMemoryHistoryManager.getHistory());
 
         System.out.println("Размер " + inMemoryHistoryManager.getHistory().size());
         task.setNameTask("NoRun");
-     Task task12 = new Task("Studydf", "Studyingdf", TaskStatus.NEW);
-    fileBackedTaskManagers1.createTask(task12);
-     System.out.println(fileBackedTaskManagers1.getAllTasks());
-     System.out.println(fileBackedTaskManagers1.getAllSubtasks());
+        Task task12 = new Task("Studydf", "Studyingdf", TaskStatus.NEW);
+        fileBackedTaskManagers1.createTask(task12);
+        System.out.println(fileBackedTaskManagers1.getAllTasks());
+        System.out.println(fileBackedTaskManagers1.getAllSubtasks());
 
 
-     fileBackedTaskManagers.createTask(task);
-     fileBackedTaskManagers.createTask(task2);
-     Epic epic4 = new Epic("Move", "Move");
-     fileBackedTaskManagers.createEpic(epic4);
-     Subtask subtask4 = new Subtask("read", "reading", TaskStatus.DONE, epic4);
-     fileBackedTaskManagers.createSubtask(subtask4);
-     subtask4.setStatus(TaskStatus.NEW);
-     fileBackedTaskManagers.updateSubtask(subtask4);
-
-
-
-
-
-
+        fileBackedTaskManagers.createTask(task);
+        fileBackedTaskManagers.createTask(task2);
+        Epic epic4 = new Epic("Move", "Move");
+        fileBackedTaskManagers.createEpic(epic4);
+        Subtask subtask4 = new Subtask("read", "reading", TaskStatus.DONE, epic4);
+        fileBackedTaskManagers.createSubtask(subtask4);
+        subtask4.setStatus(TaskStatus.NEW);
+        fileBackedTaskManagers.updateSubtask(subtask4);
     }
 }
