@@ -177,6 +177,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         fileBackedTaskManager.setIdCounter(id);
         return fileBackedTaskManager;
     }
-
 }
 

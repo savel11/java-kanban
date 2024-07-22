@@ -24,7 +24,6 @@ class FileBackedTaskManagerTest {
             assertTrue(fileBackedTaskManager.getFileWithSavedTasks().length() == 0, "Файл не пустой");
             assertEquals(fileBackedTaskManager1.getFileWithSavedTasks(), file, "Файл не загружен");
             assertTrue(fileBackedTaskManager1.getFileWithSavedTasks().length() == 0, "Файл не пустой");
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,9 +51,7 @@ class FileBackedTaskManagerTest {
                 } else {
                     assertEquals(epic, fileBackedTaskManager.fromStringEpic(line), "Задача не сохранилась в файл");
                 }
-
             }
-
             fileReader.close();
             FileBackedTaskManager fileBackedTaskManager1 = FileBackedTaskManager.loadFromFile(file1);
             assertEquals(task, fileBackedTaskManager1.getTask(1), "Задачи не загрузились");
@@ -64,5 +61,4 @@ class FileBackedTaskManagerTest {
             e.printStackTrace();
         }
     }
-
 }
