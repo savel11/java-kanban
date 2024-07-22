@@ -13,17 +13,33 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Task> tasks;
     private Map<Integer, Epic> epics;
     private Map<Integer, Subtask> subtasks;
-
-
     HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
-
     private int id = 0;
-
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subtasks = new HashMap<>();
+    }
+
+    public void setIdCounter(int count) {
+        id = count;
+    }
+
+    public Map<Integer, Task> getTasks() {
+        return tasks;
+    }
+
+    public Map<Integer, Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public Map<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    public int getIdCounter() {
+        return id;
     }
 
 
@@ -192,7 +208,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Subtask subtasks : subtasks.values()) {
             if (inMemoryHistoryManager.getHistory().contains(subtasks)) {
-            inMemoryHistoryManager.remove(subtasks.getId());
+                inMemoryHistoryManager.remove(subtasks.getId());
             }
         }
         epics.clear();

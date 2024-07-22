@@ -1,0 +1,5 @@
+id,type,name,status,description,epic
+1,TASK,NoRun,DONE,running
+2,TASK,Chek,NEW,Chek work
+3,EPIC,Move,NEW,Move
+4,SUBTASK,read,NEW,reading,3
