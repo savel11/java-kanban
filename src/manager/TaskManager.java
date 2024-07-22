@@ -4,13 +4,8 @@ import model.Epic;
 import model.Task;
 import model.Subtask;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 public interface TaskManager {
 
@@ -52,7 +47,6 @@ public interface TaskManager {
     void deleteAllEpic();
 
     List<Task> getSubtasksForEpic(Epic epic);
-
 
 
 }
