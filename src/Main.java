@@ -17,7 +17,6 @@ public class Main {
         TaskManager fileBackedTaskManagers1 = loadFromFile(new File("savedTasks.txt"));
 
         TaskManager inMemoryTaskManager = Managers.getDefault();
-        HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         TaskManager fileBackedTaskManagers = new FileBackedTaskManager(new File("savedTasks.txt"));
 
 
@@ -51,8 +50,8 @@ public class Main {
         System.out.println("Список задач:" + inMemoryTaskManager.getEpic(epic.getId()));
         System.out.println("Список задач:" + inMemoryTaskManager.getTask(task.getId()));
         System.out.println("Список задач:" + inMemoryTaskManager.getSubtask(subtask.getId()));
-        System.out.println("История " + inMemoryHistoryManager.getHistory());
-        System.out.println("Размер " + inMemoryHistoryManager.getHistory().size());
+        System.out.println("История " + inMemoryTaskManager.getHistory());
+        System.out.println("Размер " + inMemoryTaskManager.getHistory().size());
 
         task.setStatus(TaskStatus.DONE);
         subtask2.setStatus(TaskStatus.DONE);
@@ -65,17 +64,18 @@ public class Main {
         System.out.println("Список задач:" + inMemoryTaskManager.getSubtask(subtask.getId()));
 
 
-        System.out.println(inMemoryHistoryManager.getHistory());
+        System.out.println(inMemoryTaskManager.getHistory());
 
-        System.out.println("Размер " + inMemoryHistoryManager.getHistory().size());
+        System.out.println("Размер " + inMemoryTaskManager.getHistory().size());
         task.setNameTask("NoRun");
         Task task12 = new Task("Studydf", "Studyingdf", TaskStatus.NEW);
-        fileBackedTaskManagers1.createTask(task12);
+       // fileBackedTaskManagers1.createTask(task12);
         System.out.println(fileBackedTaskManagers1.getAllTasks());
         System.out.println(fileBackedTaskManagers1.getAllSubtasks());
+      //  System.out.println(inMemoryTaskManager.getSubtasksByEpic(epic));
 
 
-        fileBackedTaskManagers.createTask(task);
+     fileBackedTaskManagers.createTask(task);
         fileBackedTaskManagers.createTask(task2);
         Epic epic4 = new Epic("Move", "Move");
         fileBackedTaskManagers.createEpic(epic4);

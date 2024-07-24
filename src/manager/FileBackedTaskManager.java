@@ -6,6 +6,7 @@ import model.Task;
 import model.TaskStatus;
 
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private File fileWithSavedTasks;
+    private static final String COLUMN_DESIGNATIONS = "id,type,name,status,description,epic";
 
     public FileBackedTaskManager(File fileWithSavedTasks) {
         this.fileWithSavedTasks = fileWithSavedTasks;
@@ -26,8 +28,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     }
 
     private void save() throws ManagerSaveException {
-        try (Writer fileWriter = new FileWriter(fileWithSavedTasks.getName())) {
-            fileWriter.write("id,type,name,status,description,epic");
+        try (Writer fileWriter = new FileWriter(fileWithSavedTasks.getPath())) {
+            fileWriter.write(COLUMN_DESIGNATIONS);
             for (Map.Entry<Integer, Task> entry : getTasks().entrySet()) {
                 fileWriter.write("\n" + toString(entry.getValue()));
             }
@@ -47,28 +49,34 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public String toString(Task task) {
         String stringTask;
         if (task.getClass().getSimpleName().equals("Task")) {
-            stringTask = String.format("%d,%s,%s,%s,%s", task.getId(), TypeClass.TASK, task.getNameTask(), task.getStatus(), task.getDescriptionTask());
+            stringTask = String.format("%d,%s,%s,%s,%s", task.getId(), TypeClass.TASK, task.getNameTask(),
+                    task.getStatus(), task.getDescriptionTask());
         } else if (task.getClass().getSimpleName().equals("Subtask")) {
-            stringTask = String.format("%d,%s,%s,%s,%s,%d", task.getId(), TypeClass.SUBTASK, task.getNameTask(), task.getStatus(), task.getDescriptionTask(), task.getEpic().getId());
+            stringTask = String.format("%d,%s,%s,%s,%s,%d", task.getId(), TypeClass.SUBTASK, task.getNameTask(),
+                    task.getStatus(), task.getDescriptionTask(), task.getEpic().getId());
         } else {
-            stringTask = String.format("%d,%s,%s,%s,%s", task.getId(), TypeClass.EPIC, task.getNameTask(), task.getStatus(), task.getDescriptionTask());
+            stringTask = String.format("%d,%s,%s,%s,%s", task.getId(), TypeClass.EPIC, task.getNameTask(),
+                    task.getStatus(), task.getDescriptionTask());
         }
         return stringTask;
     }
 
     public Task fromStringTask(String value) {
         String[] infoAboutTask = value.split(",");
-        return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]), Integer.parseInt(infoAboutTask[0]));
+        return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                Integer.parseInt(infoAboutTask[0]));
     }
 
     public Subtask fromStringSubtask(String value) {
         String[] infoAboutTask = value.split(",");
-        return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]), getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[5])), Integer.parseInt(infoAboutTask[0]));
+        return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[5])), Integer.parseInt(infoAboutTask[0]));
     }
 
     public Epic fromStringEpic(String value) {
         String[] infoAboutTask = value.split(",");
-        return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]), Integer.parseInt(infoAboutTask[0]));
+        return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                Integer.parseInt(infoAboutTask[0]));
     }
 
     public String getNameClass(String str) {
@@ -156,7 +164,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         int id = 0;
-        try (BufferedReader fileReader = new BufferedReader(new FileReader(file.getName()))) {
+      //  try (BufferedReader fileReader = new BufferedReader(new FileReader(file.getName()))) {
+        try (BufferedReader fileReader = new BufferedReader(new FileReader(file.getPath()))) {
             String line = fileReader.readLine();
             while (fileReader.ready()) {
                 line = fileReader.readLine();
@@ -164,11 +173,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                     id = fileBackedTaskManager.fromStringTask(line).getId();
                 }
                 if (fileBackedTaskManager.getNameClass(line).equals("Task")) {
-                    fileBackedTaskManager.getTasks().put(fileBackedTaskManager.fromStringTask(line).getId(), fileBackedTaskManager.fromStringTask(line));
+                    fileBackedTaskManager.getTasks().put(fileBackedTaskManager.fromStringTask(line).getId(),
+                            fileBackedTaskManager.fromStringTask(line));
                 } else if (fileBackedTaskManager.getNameClass(line).equals("Subtask")) {
-                    fileBackedTaskManager.getSubtasks().put(fileBackedTaskManager.fromStringSubtask(line).getId(), fileBackedTaskManager.fromStringSubtask(line));
+                    fileBackedTaskManager.getSubtasks().put(fileBackedTaskManager.fromStringSubtask(line).getId(),
+                            fileBackedTaskManager.fromStringSubtask(line));
                 } else {
-                    fileBackedTaskManager.getEpics().put(fileBackedTaskManager.fromStringEpic(line).getId(), fileBackedTaskManager.fromStringEpic(line));
+                    fileBackedTaskManager.getEpics().put(fileBackedTaskManager.fromStringEpic(line).getId(),
+                            fileBackedTaskManager.fromStringEpic(line));
                 }
             }
         } catch (IOException e) {
