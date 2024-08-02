@@ -1,6 +1,4 @@
 
-import manager.HistoryManager;
-import manager.InMemoryHistoryManager;
 import manager.Managers;
 import manager.TaskManager;
 import model.TaskStatus;
@@ -61,7 +59,7 @@ class InMemoryTaskManagerTest {
         taskManager.createSubtask(subtask);
         Subtask subtask1 = new Subtask("Убрать квартиру", "Убрать", TaskStatus.NEW, epic);
         taskManager.createSubtask(subtask1);
-        taskManager.deleteSubtaskForId(subtask1.getId());
+        taskManager.deleteSubtaskById(subtask1.getId());
         taskManager.updateEpic(epic);
         List<Subtask> subtaskList = epic.getSubTasks();
         for (Subtask sub : subtaskList) {
