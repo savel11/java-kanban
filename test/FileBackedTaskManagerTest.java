@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class FileBackedTaskManagerTest extends TaskManagerTest {
     public FileBackedTaskManagerTest() throws IOException {
-        super(new FileBackedTaskManager(File.createTempFile("fileForTest", ".txt", new File(
-                "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource"))));
+        super(new FileBackedTaskManager(new File(
+                "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource\\filefortest")));
     }
 
     @Test

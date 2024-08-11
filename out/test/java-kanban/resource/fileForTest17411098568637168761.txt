@@ -1,4 +1,0 @@
-id,type,name,status,description,duration,startTime,endTime,epic
-1,TASK,run,NEW,running,notFound,notFound,notFound
-2,EPIC,Move,NEW,Move,notFound,notFound,notFound
-3,SUBTASK,House,NEW,Buy new house,notFound,notFound,notFound,2
