@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) {
 
        TaskManager fileBackedTaskManagers1 = loadFromFile(new File("savedTasks.txt"));
-        TaskManager inMemoryTaskManager= Managers.getDefault();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
         TaskManager fileBackedTaskManagers = new FileBackedTaskManager(new File("savedTasks.txt"));
         Task task1 = new Task("Test1", "t", TaskStatus.NEW);
         fileBackedTaskManagers.createTask(task1);
