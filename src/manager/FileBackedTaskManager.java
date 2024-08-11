@@ -6,18 +6,23 @@ import model.Task;
 import model.TaskStatus;
 
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private File fileWithSavedTasks;
-    private static final String COLUMN_DESIGNATIONS = "id,type,name,status,description,epic";
+    private static final String COLUMN_DESIGNATIONS = "id,type,name,status,description,duration,startTime,endTime,epic";
+    private static final String MISSING_VALUE = "notFound";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.dd.MM.yy");
 
     public FileBackedTaskManager(File fileWithSavedTasks) {
         this.fileWithSavedTasks = fileWithSavedTasks;
@@ -49,34 +54,73 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
     public String toString(Task task) {
         String stringTask;
         if (task.getClass().getSimpleName().equals("Task")) {
-            stringTask = String.format("%d,%s,%s,%s,%s", task.getId(), TypeClass.TASK, task.getNameTask(),
-                    task.getStatus(), task.getDescriptionTask());
+            stringTask = String.format("%d,%s,%s,%s,%s,%s,%s,%s", task.getId(), TypeClass.TASK, task.getNameTask(),
+                    task.getStatus(), task.getDescriptionTask(), toStringDuration(task.getDuration()),
+                    toStringLocalDateTime(task.getStartTime()), MISSING_VALUE);
+            if (task.getStartTime() != null) {
+                stringTask = stringTask.replace(MISSING_VALUE, toStringLocalDateTime(task.getEndTime()));
+            }
         } else if (task.getClass().getSimpleName().equals("Subtask")) {
-            stringTask = String.format("%d,%s,%s,%s,%s,%d", task.getId(), TypeClass.SUBTASK, task.getNameTask(),
-                    task.getStatus(), task.getDescriptionTask(), task.getEpic().getId());
+            stringTask = String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d", task.getId(), TypeClass.SUBTASK, task.getNameTask(),
+                    task.getStatus(), task.getDescriptionTask(), toStringDuration(task.getDuration()),
+                    toStringLocalDateTime(task.getStartTime()), MISSING_VALUE, task.getEpic().getId());
+
         } else {
-            stringTask = String.format("%d,%s,%s,%s,%s", task.getId(), TypeClass.EPIC, task.getNameTask(),
-                    task.getStatus(), task.getDescriptionTask());
+            stringTask = String.format("%d,%s,%s,%s,%s,%s,%s,%s", task.getId(), TypeClass.EPIC, task.getNameTask(),
+                    task.getStatus(), task.getDescriptionTask(), toStringDuration(task.getDuration()),
+                    toStringLocalDateTime(task.getStartTime()), MISSING_VALUE);
+        }
+        if (task.getStartTime() != null) {
+            stringTask = stringTask.replace(MISSING_VALUE, toStringLocalDateTime(task.getEndTime()));
         }
         return stringTask;
     }
 
+    public String toStringDuration(Duration duration) {
+        Optional<Duration> optionalDuration = Optional.ofNullable(duration);
+        return optionalDuration.map(value -> Long.toString(value.getSeconds())).orElse(MISSING_VALUE);
+    }
+
+    public String toStringLocalDateTime(LocalDateTime time) {
+        Optional<LocalDateTime> optionalTime = Optional.ofNullable(time);
+        return optionalTime.map(localDateTime -> localDateTime.format(DATE_FORMATTER)).orElse(MISSING_VALUE);
+    }
+
+
     public Task fromStringTask(String value) {
         String[] infoAboutTask = value.split(",");
-        return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
-                Integer.parseInt(infoAboutTask[0]));
+        if (infoAboutTask[5].equals(MISSING_VALUE) || infoAboutTask[6].equals(MISSING_VALUE)) {
+            return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                    Integer.parseInt(infoAboutTask[0]));
+        } else {
+            return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                    Integer.parseInt(infoAboutTask[0]), Duration.ofSeconds(Long.parseLong(infoAboutTask[5])),
+                    LocalDateTime.parse(infoAboutTask[6], DATE_FORMATTER));
+        }
     }
 
     public Subtask fromStringSubtask(String value) {
         String[] infoAboutTask = value.split(",");
-        return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
-                getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[5])), Integer.parseInt(infoAboutTask[0]));
+        if (infoAboutTask[5].equals(MISSING_VALUE) || infoAboutTask[6].equals(MISSING_VALUE)) {
+            return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                    getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[8])), Integer.parseInt(infoAboutTask[0]));
+        } else {
+            return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                    getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[8])), Integer.parseInt(infoAboutTask[0]),
+                    Duration.ofSeconds(Long.parseLong(infoAboutTask[5])), LocalDateTime.parse(infoAboutTask[6], DATE_FORMATTER));
+        }
     }
 
     public Epic fromStringEpic(String value) {
         String[] infoAboutTask = value.split(",");
-        return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
-                Integer.parseInt(infoAboutTask[0]));
+        if (infoAboutTask[5].equals(MISSING_VALUE) || infoAboutTask[6].equals(MISSING_VALUE)) {
+            return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                    Integer.parseInt(infoAboutTask[0]));
+        } else {
+            return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
+                    Integer.parseInt(infoAboutTask[0]), Duration.ofSeconds(Long.parseLong(infoAboutTask[5])),
+                    LocalDateTime.parse(infoAboutTask[6], DATE_FORMATTER), LocalDateTime.parse(infoAboutTask[7], DATE_FORMATTER));
+        }
     }
 
     public String getNameClass(String str) {
@@ -161,10 +205,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         save();
     }
 
+    public void addTaskInPrioritizedTasks(Task task) {
+        if (task.getStartTime() != null) {
+            getPrioritizedTasks().add(task);
+        }
+    }
+
     public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
         FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         int id = 0;
-      //  try (BufferedReader fileReader = new BufferedReader(new FileReader(file.getName()))) {
         try (BufferedReader fileReader = new BufferedReader(new FileReader(file.getPath()))) {
             String line = fileReader.readLine();
             while (fileReader.ready()) {
@@ -175,13 +224,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 if (fileBackedTaskManager.getNameClass(line).equals("Task")) {
                     fileBackedTaskManager.getTasks().put(fileBackedTaskManager.fromStringTask(line).getId(),
                             fileBackedTaskManager.fromStringTask(line));
+                    fileBackedTaskManager.addTaskInPrioritizedTasks(fileBackedTaskManager.fromStringTask(line));
                 } else if (fileBackedTaskManager.getNameClass(line).equals("Subtask")) {
                     fileBackedTaskManager.getSubtasks().put(fileBackedTaskManager.fromStringSubtask(line).getId(),
                             fileBackedTaskManager.fromStringSubtask(line));
+                    fileBackedTaskManager.addTaskInPrioritizedTasks(fileBackedTaskManager.fromStringTask(line));
                 } else {
                     fileBackedTaskManager.getEpics().put(fileBackedTaskManager.fromStringEpic(line).getId(),
                             fileBackedTaskManager.fromStringEpic(line));
                 }
+
             }
         } catch (IOException e) {
             throw new ManagerSaveException();

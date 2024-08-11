@@ -1,4 +1,5 @@
 import manager.FileBackedTaskManager;
+import manager.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -12,9 +13,59 @@ import java.io.IOException;
 
 import static manager.FileBackedTaskManager.loadFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest {
+    public FileBackedTaskManagerTest() throws IOException {
+        super(new FileBackedTaskManager(File.createTempFile("fileForTest", ".txt", new File(
+                "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource"))));
+    }
+
+    @Test
+    void shouldBeCreatedGetAndDeleteTasks() {
+        super.shouldBeCreatedGetAndDeleteTasks();
+    }
+
+    @Test
+    void shouldCalculatedStatus() {
+        super.shouldCalculatedStatus();
+    }
+
+    @Test
+    void shouldCalculatedOverlap() {
+        super.shouldCalculatedOverlap();
+    }
+
+    @Test
+    void shouldUpdatedTasks() {
+        super.shouldUpdateTasks();
+    }
+
+    @Test
+    void shouldGetHistory() {
+        super.shouldGetHistory();
+    }
+
+    @Test
+    void shouldGetPrioritizedTask() {
+        super.shouldGetPrioritizedTask();
+    }
+
+    @Test
+    void shouldInterceptionOfExceptions() {
+        assertThrows(IOException.class, () -> {
+            File file = new File(
+                    "C:\\Users\\Савелий\\first-project\\java-kanban\\dontexistdirectory\\test\\data.txt");
+            file.createNewFile();
+        }, "Создание файла в несуществующий директории должно приводить к исключению");
+        assertThrows(ManagerSaveException.class, () -> {
+            File fakeFile = new File(
+                    "C:\\Users\\Савелий\\first-project\\java-kanban\\dontexistdirectory\\test\\data.txt");
+            FileBackedTaskManager fileBackedTaskManager = loadFromFile(fakeFile);
+        }, "Обращения к несуществующему файлу должно приводить к тсключению");
+    }
+
     @Test
     void shouldBeSaveVoidFileAndDownloadVoidFile() {
         try {
