@@ -50,6 +50,8 @@ public interface TaskManager {
     List<Subtask> getSubtasksByEpic(Epic epic);
 
     List<Task> getHistory();
+
     Set<Task> getPrioritizedTasks();
-     boolean isTasksOverlapInTime(Task task1, Task task2);
+
+    boolean isTasksOverlapInTime(Task task1, Task task2);
 }
