@@ -55,8 +55,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     @Test
     void shouldInterceptionOfExceptions() {
         assertThrows(ManagerSaveException.class, () -> {
-            FileBackedTaskManager fileBackedTaskManager1 = new FileBackedTaskManager(new File(
-                    "dontexistdirectory\\file.txt"));
+            File notExistFile = new File("dontexistdirectory\\file.txt");
+            FileBackedTaskManager fileBackedTaskManager1 = new FileBackedTaskManager(notExistFile);
            fileBackedTaskManager1.createTask(new Task("run", "running", TaskStatus.NEW));
         }, "Создание файла в несуществующий директории должно приводить к исключению");
         assertThrows(ManagerSaveException.class, () -> {
