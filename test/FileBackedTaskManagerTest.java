@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FileBackedTaskManagerTest extends TaskManagerTest {
     public FileBackedTaskManagerTest() throws IOException {
         super(new FileBackedTaskManager(new File(
-                "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource\\filefortest")));
+                "test\\resource\\filefortest")));
     }
 
     @Test
@@ -70,7 +70,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void shouldBeSaveVoidFileAndDownloadVoidFile() {
         try {
             File file = File.createTempFile("fileForTest", ".txt", new File(
-                    "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource"));
+                    "test\\resource"));
 
             FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
             FileBackedTaskManager fileBackedTaskManager1 = loadFromFile(file);
@@ -87,7 +87,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void shouldToSaveTasksAndDownloadTasks() {
         try {
             File file1 = File.createTempFile("fileForTest", ".txt", new File(
-                    "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource"));
+                    "test\\resource"));
             FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file1);
             Task task = new Task("run", "running", TaskStatus.NEW);
             fileBackedTaskManager.createTask(task);
