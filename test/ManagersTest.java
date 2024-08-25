@@ -14,5 +14,4 @@ class ManagersTest {
         assertNotNull(historyManager);
         assertNotNull(taskManager);
     }
-
 }

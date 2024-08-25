@@ -1,6 +1,9 @@
 package manager;
 
+import model.Epic;
+import model.Subtask;
 import model.Task;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,10 +17,20 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
+        Task taskHistory;
         if (nodeMap.containsKey(task.getId())) {
             remove(task.getId());
         }
-        Task taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId());
+        if (task.getClass().getSimpleName().equals("Task")) {
+            taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId(),
+                    task.getDuration(), task.getStartTime());
+        } else if (task.getClass().getSimpleName().equals("Subtask")) {
+            taskHistory = new Subtask(task.getNameTask(), task.getDescriptionTask(), task.getStatus(),
+                    task.getEpic(), task.getId(), task.getDuration(), task.getStartTime());
+        } else {
+            taskHistory = new Epic(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId(),
+                    task.getDuration(), task.getStartTime(), task.getEndTime());
+        }
         tasksDoubleList.linkLast(taskHistory);
         nodeMap.put(task.getId(), tasksDoubleList.tail);
     }
@@ -29,8 +42,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        tasksDoubleList.removeNode(nodeMap.get(id));
-        nodeMap.remove(id);
+        if (getHistory().stream().map(task -> task.getId()).anyMatch(taskId -> taskId == id)) {
+            tasksDoubleList.removeNode(nodeMap.get(id));
+            nodeMap.remove(id);
+        }
     }
 
     public static class TasksDoubleList<T> {

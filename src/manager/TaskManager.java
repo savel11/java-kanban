@@ -5,6 +5,7 @@ import model.Task;
 import model.Subtask;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface TaskManager {
@@ -50,5 +51,7 @@ public interface TaskManager {
 
     List<Task> getHistory();
 
+    Set<Task> getPrioritizedTasks();
 
+    boolean isTasksOverlapInTime(Task task1, Task task2);
 }

@@ -1,4 +1,5 @@
 import manager.FileBackedTaskManager;
+import manager.ManagerSaveException;
 import model.Epic;
 import model.Subtask;
 import model.Task;
@@ -12,14 +13,64 @@ import java.io.IOException;
 
 import static manager.FileBackedTaskManager.loadFromFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest {
+    public FileBackedTaskManagerTest() throws IOException {
+        super(new FileBackedTaskManager(new File(
+                "test\\resource\\filefortest")));
+    }
+
+    @Test
+    void shouldBeCreatedGetAndDeleteTasks() {
+        super.shouldBeCreatedGetAndDeleteTasks();
+    }
+
+    @Test
+    void shouldCalculatedStatus() {
+        super.shouldCalculatedStatus();
+    }
+
+    @Test
+    void shouldCalculatedOverlap() {
+        super.shouldCalculatedOverlap();
+    }
+
+    @Test
+    void shouldUpdatedTasks() {
+        super.shouldUpdateTasks();
+    }
+
+    @Test
+    void shouldGetHistory() {
+        super.shouldGetHistory();
+    }
+
+    @Test
+    void shouldGetPrioritizedTask() {
+        super.shouldGetPrioritizedTask();
+    }
+
+    @Test
+    void shouldInterceptionOfExceptions() {
+        assertThrows(ManagerSaveException.class, () -> {
+            FileBackedTaskManager fileBackedTaskManager1 = new FileBackedTaskManager(new File(
+            "data/thisdirectorydoesnotexist\file.txt"));
+           fileBackedTaskManager1.createTask(new Task("run", "running", TaskStatus.NEW));
+        }, "Создание файла в несуществующий директории должно приводить к исключению");
+        assertThrows(ManagerSaveException.class, () -> {
+            File fakeFile = new File(
+                    "resource\\dontexistdirector\\data.txt");
+            FileBackedTaskManager fileBackedTaskManager = loadFromFile(fakeFile);
+        }, "Обращения к несуществующему файлу должно приводить к тсключению");
+    }
+
     @Test
     void shouldBeSaveVoidFileAndDownloadVoidFile() {
         try {
             File file = File.createTempFile("fileForTest", ".txt", new File(
-                    "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource"));
+                    "test\\resource"));
 
             FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
             FileBackedTaskManager fileBackedTaskManager1 = loadFromFile(file);
@@ -36,7 +87,7 @@ class FileBackedTaskManagerTest {
     void shouldToSaveTasksAndDownloadTasks() {
         try {
             File file1 = File.createTempFile("fileForTest", ".txt", new File(
-                    "C:\\Users\\Савелий\\first-project\\java-kanban\\test\\resource"));
+                    "test\\resource"));
             FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file1);
             Task task = new Task("run", "running", TaskStatus.NEW);
             fileBackedTaskManager.createTask(task);

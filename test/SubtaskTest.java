@@ -12,5 +12,4 @@ class SubtaskTest {
         Subtask subtask1 = new Subtask("Готовка", "Приготвоить обед", TaskStatus.NEW, null, 5);
         assertEquals(subtask, subtask1);
     }
-
 }
