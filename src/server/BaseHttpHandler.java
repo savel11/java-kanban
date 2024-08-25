@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.sun.net.httpserver.HttpExchange;
 import manager.TaskManager;
-import model.Epic;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -113,7 +112,7 @@ public class BaseHttpHandler {
 
     protected Optional<Integer> getTaskId(HttpExchange h) {
         String[] pathParts = h.getRequestURI().getPath().split("/");
-        try{
+        try {
             return Optional.of(Integer.parseInt(pathParts[2]));
         } catch (NumberFormatException e) {
             return Optional.empty();
