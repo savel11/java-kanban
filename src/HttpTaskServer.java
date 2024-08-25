@@ -11,16 +11,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 
-public class Main {
-
-    public static void main(String[] args) throws IOException {
-
-        HttpTaskServer httpTaskServer = new HttpTaskServer(Managers.getDefault());
-        httpTaskServer.start();
-    }
-}
-
-class HttpTaskServer {
+public class HttpTaskServer {
     HttpServer httpServer;
     TaskManager taskManager;
 
@@ -41,5 +32,13 @@ class HttpTaskServer {
     public void stop() {
         httpServer.stop(1);
     }
+
+    public static void main(String[] args) throws IOException {
+
+        HttpTaskServer httpTaskServer = new HttpTaskServer(Managers.getDefault());
+        httpTaskServer.start();
+    }
 }
+
+
 
