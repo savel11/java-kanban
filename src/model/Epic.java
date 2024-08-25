@@ -1,5 +1,7 @@
 package model;
 
+import com.google.gson.annotations.Expose;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Epic extends Task {
+    @Expose
     private List<Subtask> subTasks = new ArrayList<>();
     private LocalDateTime endTime;
 

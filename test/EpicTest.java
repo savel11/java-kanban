@@ -6,6 +6,7 @@ import model.Epic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
 class EpicTest {
     @Test
     void shouldBeEqualsEpicWithSameId() {

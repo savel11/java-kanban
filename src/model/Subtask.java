@@ -43,14 +43,14 @@ public class Subtask extends Task {
         if (getStartTime() != null) {
             return "Task{" + "nameTask='" + getNameTask() + '\'' + ", descriptionTask='" +
                     getDescriptionTask() + '\'' + ", status='" + getStatus() + '\'' +
-                    ", id='" + getId() + '\'' + ", epicId=' " + getEpic().getId() + '\'' + ", duration='"
+                    ", id='" + getId() + '\'' + ", epic=' " + getEpic() + '\'' + ", duration='"
                     + getDuration().toHours() + ":" + getDuration().toMinutesPart()
                     + '\'' + ", startTime='" + getStartTime().format(DATE_TIME_FORMATTER) + '\'' + ", endTime='" +
                     getEndTime().format(DATE_TIME_FORMATTER) + '\'' + "}";
         } else
             return "Task{" + "nameTask='" + getNameTask() + '\'' + ", descriptionTask='" +
                     getDescriptionTask() + '\'' + ", status='" + getStatus() + '\'' +
-                    ", id='" + getId() + '\'' + ", epicId=' " + getEpic().getId() + '\'' + "}";
+                    ", id='" + getId() + '\'' + ", epic=' " + getEpic() + '\'' + "}";
 
     }
 }
