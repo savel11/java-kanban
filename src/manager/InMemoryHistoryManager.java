@@ -21,10 +21,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (nodeMap.containsKey(task.getId())) {
             remove(task.getId());
         }
-        if (task.getClass().getSimpleName().equals("Task")) {
+        if ("Task".equals(task.getClass().getSimpleName())) {
             taskHistory = new Task(task.getNameTask(), task.getDescriptionTask(), task.getStatus(), task.getId(),
                     task.getDuration(), task.getStartTime());
-        } else if (task.getClass().getSimpleName().equals("Subtask")) {
+        } else if ("Subtask".equals(task.getClass().getSimpleName())) {
             taskHistory = new Subtask(task.getNameTask(), task.getDescriptionTask(), task.getStatus(),
                     task.getEpic(), task.getId(), task.getDuration(), task.getStartTime());
         } else {

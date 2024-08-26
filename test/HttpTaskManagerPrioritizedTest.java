@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.Task;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.BaseHttpHandler;
+import typetokens.PrioritizedTypeToken;
 
 import java.io.IOException;
 import java.net.URI;
@@ -61,14 +61,11 @@ public class HttpTaskManagerPrioritizedTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Неправельный код ответа");
-        Set<Task> serverPrioritized = gson.fromJson(response.body(), new ServerPrioritizedTypeToken().getType());
+        Set<Task> serverPrioritized = gson.fromJson(response.body(), new PrioritizedTypeToken().getType());
         assertEquals(3, serverPrioritized.size(), "Неккоректный размери списка");
         assertEquals(manager.getPrioritizedTasks(), serverPrioritized,
                 "Некорректнай список");
     }
-}
-
-class ServerPrioritizedTypeToken extends TypeToken<Set<Task>> {
 }
 
 

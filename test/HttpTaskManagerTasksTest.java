@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.Task;
@@ -8,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.BaseHttpHandler;
+import typetokens.TasksTypeToken;
 
 import java.io.IOException;
 import java.net.URI;
@@ -59,7 +59,7 @@ public class HttpTaskManagerTasksTest {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        ArrayList<Task> serverListTasks = gson.fromJson(response.body(), new ServerTasksTypeToken().getType());
+        ArrayList<Task> serverListTasks = gson.fromJson(response.body(), new TasksTypeToken().getType());
         assertEquals(200, response.statusCode(), "Неправельный код ответа");
         assertEquals(2, serverListTasks.size(), "Некорректное количество задач");
         assertEquals(manager.getAllTasks(), serverListTasks, "Возвращаются некорректные задачи");
@@ -256,8 +256,5 @@ public class HttpTaskManagerTasksTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(404, response.statusCode(), "Неправельный код ответа");
     }
-}
-
-class ServerTasksTypeToken extends TypeToken<ArrayList<Task>> {
 }
 

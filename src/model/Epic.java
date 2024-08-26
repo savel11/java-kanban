@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,9 +62,9 @@ public class Epic extends Task {
         int numberOfStatusProgress = 0;
         TaskStatus result = TaskStatus.NEW;
         for (Subtask element : epic.getSubTasks()) {
-            if (element.getStatus().equals(TaskStatus.DONE)) {
+            if (TaskStatus.DONE.equals(element.getStatus())) {
                 numberOfStatusDone += 1;
-            } else if (element.getStatus().equals(TaskStatus.IN_PROGRESS)) {
+            } else if (TaskStatus.IN_PROGRESS.equals(element.getStatus())) {
                 numberOfStatusProgress += 1;
             }
         }
@@ -80,26 +81,10 @@ public class Epic extends Task {
         List<Subtask> subtasks = epic.getSubTasks();
         Supplier<Stream<Subtask>> streamSupplier = () -> subtasks.stream();
         Optional<Subtask> subtaskWithMinStartTime =
-                streamSupplier.get().min((Subtask subtask1, Subtask subtask2) -> {
-                    if (subtask1.getStartTime().equals(subtask2.getStartTime())) {
-                        return 0;
-                    } else if (subtask1.getStartTime().isAfter(subtask2.getStartTime())) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                });
+                streamSupplier.get().filter(subtask -> subtask.getStartTime() != null).min(Comparator.comparing(Task::getStartTime));
         subtaskWithMinStartTime.ifPresent(subtask -> epic.setStartTime(subtask.getStartTime()));
         Optional<Subtask> subtaskWithMaxEndTime =
-                streamSupplier.get().max((Subtask subtask1, Subtask subtask2) -> {
-                    if (subtask1.getEndTime().equals(subtask2.getEndTime())) {
-                        return 0;
-                    } else if (subtask1.getEndTime().isAfter(subtask2.getEndTime())) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                });
+                streamSupplier.get().filter(subtask -> subtask.getEndTime() != null).max(Comparator.comparing(Task::getStartTime));
         subtaskWithMaxEndTime.ifPresent(subtask -> epic.setEndTime(subtask.getEndTime()));
         for (Subtask element : subtasks) {
             duration = duration.plus(element.getDuration());

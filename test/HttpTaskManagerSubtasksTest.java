@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.Epic;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.BaseHttpHandler;
+import typetokens.SubtasksTypeToken;
 
 import java.io.IOException;
 import java.net.URI;
@@ -63,7 +63,7 @@ public class HttpTaskManagerSubtasksTest {
                 .GET()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        ArrayList<Subtask> serverListSubtasks = gson.fromJson(response.body(), new ServerSubtasksTypeToken().getType());
+        ArrayList<Subtask> serverListSubtasks = gson.fromJson(response.body(), new SubtasksTypeToken().getType());
         assertEquals(200, response.statusCode(), "Неправельный код ответа");
         assertEquals(2, serverListSubtasks.size(), "Некорректное количество подзадач");
         assertEquals(manager.getAllSubtasks(), serverListSubtasks, "Возвращаются некорректные подзадачи");
@@ -283,7 +283,4 @@ public class HttpTaskManagerSubtasksTest {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(404, response.statusCode(), "Неправельный код ответа");
     }
-}
-
-class ServerSubtasksTypeToken extends TypeToken<ArrayList<Subtask>> {
 }

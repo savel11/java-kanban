@@ -1,5 +1,7 @@
 package server;
 
+import adapters.DurationAdapter;
+import adapters.LocalDateTimeAdapter;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -74,37 +76,37 @@ public class BaseHttpHandler {
 
     protected Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
-        if ((pathParts[1].equals("tasks") || pathParts[1].equals("subtasks")
-                || pathParts[1].equals("epics")) && pathParts.length == 2) {
-            if (requestMethod.equals("GET")) {
+        if (("tasks".equals(pathParts[1]) || "subtasks".equals(pathParts[1])
+                || "epics".equals(pathParts[1])) && pathParts.length == 2) {
+            if ("GET".equals(requestMethod)) {
                 return Endpoint.GET_TASKS;
             }
-            if (requestMethod.equals("POST")) {
+            if ("POST".equals(requestMethod)) {
                 return Endpoint.POST_CREATE;
             }
-            if (requestMethod.equals("DELETE")) {
+            if ("DELETE".equals(requestMethod)) {
                 return Endpoint.DELETE;
             }
         }
-        if ((pathParts[1].equals("tasks") || pathParts[1].equals("subtasks")
-                || pathParts[1].equals("epics")) && pathParts.length == 3) {
-            if (requestMethod.equals("GET")) {
+        if (("tasks".equals(pathParts[1]) || "subtasks".equals(pathParts[1])
+                || "epics".equals(pathParts[1])) && pathParts.length == 3) {
+            if ("GET".equals(requestMethod)) {
                 return Endpoint.GET_TASK_BY_ID;
             }
-            if (requestMethod.equals("POST")) {
+            if ("POST".equals(requestMethod)) {
                 return Endpoint.POST_UPDATE;
             }
-            if (requestMethod.equals("DELETE")) {
+            if ("DELETE".equals(requestMethod)) {
                 return Endpoint.DELETE_BY_ID;
             }
         }
-        if (pathParts[1].equals("epics") && pathParts[3].equals("subtasks") && pathParts.length == 4) {
+        if ("epics".equals(pathParts[1]) && "subtasks".equals(pathParts[3]) && pathParts.length == 4) {
             return Endpoint.GET_EPIC_SUBTASKS;
         }
-        if (pathParts[1].equals("history") && pathParts.length == 2 && requestMethod.equals("GET")) {
+        if ("history".equals(pathParts[1]) && pathParts.length == 2 && "GET".equals(requestMethod)) {
             return Endpoint.GET_HISTORY;
         }
-        if (pathParts[1].equals("prioritized") && pathParts.length == 2 && requestMethod.equals("GET")) {
+        if ("prioritized".equals(pathParts[1]) && pathParts.length == 2 && "GET".equals(requestMethod)) {
             return Endpoint.GET_PRIORITIZED;
         }
         return Endpoint.UNKNOWN;

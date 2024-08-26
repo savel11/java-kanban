@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import model.Epic;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.BaseHttpHandler;
+import typetokens.TasksTypeToken;
 
 import java.io.IOException;
 import java.net.URI;
@@ -62,7 +62,7 @@ public class HttpTaskManagerHistoryTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals(200, response.statusCode(), "Неправельный код ответа");
-        List<Task> serverHistory = gson.fromJson(response.body(), new ServerHistoryTypeToken().getType());
+        List<Task> serverHistory = gson.fromJson(response.body(), new TasksTypeToken().getType());
         List<Task> history = manager.getHistory();
         assertEquals(2, serverHistory.size(), "Неккоректный размери истории");
         assertEquals(serverHistory.getFirst().getNameTask(), history.getFirst().getNameTask(),
@@ -70,7 +70,4 @@ public class HttpTaskManagerHistoryTest {
         assertEquals(serverHistory.get(1).getNameTask(), history.get(1).getNameTask(),
                 "Некорректная история");
     }
-}
-
-class ServerHistoryTypeToken extends TypeToken<List<Task>> {
 }
