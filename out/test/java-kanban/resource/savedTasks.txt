@@ -1,0 +1,6 @@
+id,type,name,status,description,duration,startTime,endTime,epic
+1,TASK,Test1,NEW,t,notFound,notFound,notFound
+2,TASK,Test2,IN_PROGRESS,t,600,10.00.05.05.16,10.10.05.05.16
+3,TASK,Test4,IN_PROGRESS,t,600,10.05.05.05.17,10.15.05.05.17
+4,EPIC,Epic1,NEW,epic1,600,10.00.05.06.16,10.10.05.06.16
+5,SUBTASK,Subtask1,NEW,subtask1,600,10.00.05.06.16,10.10.05.06.16,4

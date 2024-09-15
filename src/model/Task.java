@@ -9,7 +9,7 @@ public class Task {
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yy");
     private String nameTask;
     private String descriptionTask;
-    protected TaskStatus status;
+    private TaskStatus status;
     private int id;
     private Duration duration;
     private LocalDateTime startTime;

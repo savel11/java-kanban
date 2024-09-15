@@ -48,7 +48,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(2, taskManager.getAllTasks().size(), "Не все задачи полученны");
         assertEquals(2, taskManager.getAllEpic().size(), "Не все эпики полученны");
         assertEquals(3, taskManager.getAllSubtasks().size(), "Не все подзадачи полученны");
-        assertEquals(2, taskManager.getSubtasksByEpic(epic1).size(),
+        assertEquals(2, taskManager.getSubtasksByEpic(taskManager.getEpic(epic1.getId())).size(),
                 "Не все подзадачи эпика получены");
         taskManager.deleteTaskById(task1.getId());
         taskManager.deleteSubtaskById(subtask2.getId());

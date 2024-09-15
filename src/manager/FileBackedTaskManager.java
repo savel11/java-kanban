@@ -14,15 +14,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
+
+import static model.Task.DATE_TIME_FORMATTER;
 
 public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private File fileWithSavedTasks;
     private static final String COLUMN_DESIGNATIONS = "id,type,name,status,description,duration,startTime,endTime,epic";
     private static final String MISSING_VALUE = "notFound";
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("HH.mm.dd.MM.yy");
 
     public FileBackedTaskManager(File fileWithSavedTasks) {
         this.fileWithSavedTasks = fileWithSavedTasks;
@@ -53,14 +53,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     public String toString(Task task) {
         String stringTask;
-        if (task.getClass().getSimpleName().equals("Task")) {
+        if ("Task".equals(task.getClass().getSimpleName())) {
             stringTask = String.format("%d,%s,%s,%s,%s,%s,%s,%s", task.getId(), TypeClass.TASK, task.getNameTask(),
                     task.getStatus(), task.getDescriptionTask(), toStringDuration(task.getDuration()),
                     toStringLocalDateTime(task.getStartTime()), MISSING_VALUE);
             if (task.getStartTime() != null) {
                 stringTask = stringTask.replace(MISSING_VALUE, toStringLocalDateTime(task.getEndTime()));
             }
-        } else if (task.getClass().getSimpleName().equals("Subtask")) {
+        } else if ("Subtask".equals(task.getClass().getSimpleName())) {
             stringTask = String.format("%d,%s,%s,%s,%s,%s,%s,%s,%d", task.getId(), TypeClass.SUBTASK, task.getNameTask(),
                     task.getStatus(), task.getDescriptionTask(), toStringDuration(task.getDuration()),
                     toStringLocalDateTime(task.getStartTime()), MISSING_VALUE, task.getEpic().getId());
@@ -83,54 +83,57 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
 
     public String toStringLocalDateTime(LocalDateTime time) {
         Optional<LocalDateTime> optionalTime = Optional.ofNullable(time);
-        return optionalTime.map(localDateTime -> localDateTime.format(DATE_FORMATTER)).orElse(MISSING_VALUE);
+        return optionalTime.map(localDateTime -> localDateTime.format(DATE_TIME_FORMATTER)).orElse(MISSING_VALUE);
     }
 
 
-    public Task fromStringTask(String value) {
+    public Task fromStringTask(String value) throws NotFoundException {
         String[] infoAboutTask = value.split(",");
-        if (infoAboutTask[5].equals(MISSING_VALUE) || infoAboutTask[6].equals(MISSING_VALUE)) {
+        if (MISSING_VALUE.equals(infoAboutTask[5]) || MISSING_VALUE.equals(infoAboutTask[6])) {
             return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
                     Integer.parseInt(infoAboutTask[0]));
         } else {
             return new Task(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
                     Integer.parseInt(infoAboutTask[0]), Duration.ofSeconds(Long.parseLong(infoAboutTask[5])),
-                    LocalDateTime.parse(infoAboutTask[6], DATE_FORMATTER));
+                    LocalDateTime.parse(infoAboutTask[6], DATE_TIME_FORMATTER));
         }
     }
 
     public Subtask fromStringSubtask(String value) {
         String[] infoAboutTask = value.split(",");
-        if (infoAboutTask[5].equals(MISSING_VALUE) || infoAboutTask[6].equals(MISSING_VALUE)) {
+        if (MISSING_VALUE.equals(infoAboutTask[5]) || MISSING_VALUE.equals(infoAboutTask[6])) {
             return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
                     getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[8])), Integer.parseInt(infoAboutTask[0]));
         } else {
             return new Subtask(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
                     getEpicWithoutAddInHistory(Integer.parseInt(infoAboutTask[8])), Integer.parseInt(infoAboutTask[0]),
-                    Duration.ofSeconds(Long.parseLong(infoAboutTask[5])), LocalDateTime.parse(infoAboutTask[6], DATE_FORMATTER));
+                    Duration.ofSeconds(Long.parseLong(infoAboutTask[5])),
+                    LocalDateTime.parse(infoAboutTask[6], DATE_TIME_FORMATTER));
         }
     }
 
     public Epic fromStringEpic(String value) {
         String[] infoAboutTask = value.split(",");
-        if (infoAboutTask[5].equals(MISSING_VALUE) || infoAboutTask[6].equals(MISSING_VALUE)) {
+        if (MISSING_VALUE.equals(infoAboutTask[5]) || MISSING_VALUE.equals(infoAboutTask[6])) {
             return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
                     Integer.parseInt(infoAboutTask[0]));
         } else {
             return new Epic(infoAboutTask[2], infoAboutTask[4], getTaskStatus(infoAboutTask[3]),
                     Integer.parseInt(infoAboutTask[0]), Duration.ofSeconds(Long.parseLong(infoAboutTask[5])),
-                    LocalDateTime.parse(infoAboutTask[6], DATE_FORMATTER), LocalDateTime.parse(infoAboutTask[7], DATE_FORMATTER));
+                    LocalDateTime.parse(infoAboutTask[6], DATE_TIME_FORMATTER),
+                    LocalDateTime.parse(infoAboutTask[7], DATE_TIME_FORMATTER));
         }
     }
 
     public String getNameClass(String str) {
         String nameClass;
-        String[] infoAboutTask = str.split(",");
-        nameClass = switch (infoAboutTask[1]) {
-            case "TASK" -> "Task";
-            case "SUBTASK" -> "Subtask";
-            default -> "Epic";
-        };
+            String[] infoAboutTask = str.split(",");
+            nameClass = switch (infoAboutTask[1]) {
+                case "TASK" -> "Task";
+                case "SUBTASK" -> "Subtask";
+                case "EPIC" -> "Epic";
+                default -> throw new NotFoundException("Неизвестный класс задачи");
+            };
         return nameClass;
     }
 
@@ -139,7 +142,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
         taskStatus = switch (status) {
             case "NEW" -> TaskStatus.NEW;
             case "DONE" -> TaskStatus.DONE;
-            default -> TaskStatus.IN_PROGRESS;
+            case "IN_PROGRESS" -> TaskStatus.IN_PROGRESS;
+            default -> throw new NotFoundException("Неизвестный статус задачи");
         };
         return taskStatus;
     }
@@ -221,11 +225,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager implements TaskMa
                 if (fileBackedTaskManager.fromStringTask(line).getId() > id) {
                     id = fileBackedTaskManager.fromStringTask(line).getId();
                 }
-                if (fileBackedTaskManager.getNameClass(line).equals("Task")) {
+                if ("Task".equals(fileBackedTaskManager.getNameClass(line))) {
                     fileBackedTaskManager.getTasks().put(fileBackedTaskManager.fromStringTask(line).getId(),
                             fileBackedTaskManager.fromStringTask(line));
                     fileBackedTaskManager.addTaskInPrioritizedTasks(fileBackedTaskManager.fromStringTask(line));
-                } else if (fileBackedTaskManager.getNameClass(line).equals("Subtask")) {
+                } else if ("Subtask".equals(fileBackedTaskManager.getNameClass(line))) {
                     fileBackedTaskManager.getSubtasks().put(fileBackedTaskManager.fromStringSubtask(line).getId(),
                             fileBackedTaskManager.fromStringSubtask(line));
                     fileBackedTaskManager.addTaskInPrioritizedTasks(fileBackedTaskManager.fromStringTask(line));
